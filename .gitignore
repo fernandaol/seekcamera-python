@@ -133,3 +133,6 @@ dmypy.json
 
 # JetBrains
 .idea/
+
+# camera output files
+*.csv
