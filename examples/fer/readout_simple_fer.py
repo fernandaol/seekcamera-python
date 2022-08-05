@@ -2,15 +2,42 @@ from time import sleep
 
 import numpy as np
 import pandas as pd
+from matplotlib import pyplot as plt
+import csv
 
-# from matplotlib import pyplot as plt
-
+import seekcamera
 from seekcamera import (
     SeekCameraIOType,
     SeekCameraManager,
     SeekCameraManagerEvent,
     SeekCameraFrameFormat,
 )
+
+
+def generate_pdf(csv_file_name, pdf_name, temperature_label_display=None):
+    reader = csv.reader(open(csv_file_name, "r"), delimiter=" ")
+    rows = []
+
+    for row in reader:
+        rows.append(row)
+
+    plt.rcParams["figure.figsize"] = [7.00, 3.50]
+    plt.rcParams["figure.autolayout"] = True
+
+    # dataframe
+    df = pd.read_csv(csv_file_name, delimiter=" ").astype(float)
+    im = plt.imshow(df, cmap="jet")
+
+    cbar = plt.colorbar(im)
+    if temperature_label_display is not None:
+        cbar.set_label(temperature_label_display, rotation=270, labelpad=15)
+
+    plt.title(label='Thermography', fontdict=None, loc='center', pad=None)
+    plt.xticks([])
+    plt.yticks([])
+    plt.savefig(pdf_name)
+
+    plt.show()
 
 
 def on_frame(camera, camera_frame, file_name):
@@ -81,7 +108,7 @@ def on_frame(camera, camera_frame, file_name):
 #  for multiple events or multiple LocalSolver instances. The method can be a static 
 # function or a method on a class.
 
-def on_event(camera, event_type, event_status, _user_data):
+def on_event(camera, event_type, event_status, temperature_wanted):
     """Async callback fired whenever a camera event occurs.
 
     Parameters
@@ -102,10 +129,12 @@ def on_event(camera, event_type, event_status, _user_data):
     print(str(event_type), str(event_status))
 
     if event_type == SeekCameraManagerEvent.CONNECT:
-        file_name = "Thermography-" + camera.chipid + ".csv"
+        # file_name = "Thermography-" + camera.chipid + ".csv"
+        file_name = "Thermography.csv"
 
         # Start streaming data and provide a custom callback to be called
         # every time a new frame is received.
+        camera.temperature_unit = seekcamera.SeekCameraTemperatureUnit(temperature_wanted)
         camera.register_frame_available_callback(on_frame, file_name)
         camera.capture_session_start(SeekCameraFrameFormat.THERMOGRAPHY_FLOAT)
 
@@ -124,14 +153,13 @@ def main():
     # Cameras with other IO types can be managed by using a bitwise or of the
     # SeekCameraIOType enum cases.
     with SeekCameraManager(SeekCameraIOType.USB) as manager:
+        temperature_wanted = int(input("0 = CELSIUS, 1 = FAHRENHEIT, 2 = KELVIN\nWhich unit do you want?\n"))
+
         # Start listening for events.
-        manager.register_event_callback(on_event)
+        manager.register_event_callback(on_event, temperature_wanted)
         sleep(2.0)
-        # manager.destroy()
 
-        # while True:
-        #     sleep(1.0)
-
+    generate_pdf("Thermography.csv", "Thermography.pdf")
 
 if __name__ == "__main__":
     main()
