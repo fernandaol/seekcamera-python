@@ -31,8 +31,8 @@ class SeekCameraVersion:
     """
 
     MAJOR = 1
-    MINOR = 2
-    PATCH = 0
+    MINOR = 1
+    PATCH = 1
 
     def __str__(self):
         return "{}.{}.{}".format(self.MAJOR, self.MINOR, self.PATCH)

@@ -72,18 +72,12 @@ def on_frame(camera, camera_frame, file_name):
     # would be better to overwrite file every time here instead of opening and closing it at every iteration
     np.savetxt(file, frame.data, fmt="%.1f")
 
-    '''trying to overwrite file'''
-    '''
-    my_file=open(file, "w")
-    my_file.write(frame.data, fmt="%.1f")
-    my_file.close()
-    '''
-
     file.close()
     print(file.closed)
 
     df = frame.data
     print(df)
+
     # print(frame.data)
     print(" ", type(frame.data))
     print('The main data structure in NumPy is the ndarray, which is a shorthand name for N-dimensional array.')
@@ -146,7 +140,6 @@ def on_event(camera, event_type, event_status, temperature_wanted):
 
     elif event_type == SeekCameraManagerEvent.READY_TO_PAIR:
         return
-
 
 def main():
     # Create a context structure responsible for managing all connected USB cameras.

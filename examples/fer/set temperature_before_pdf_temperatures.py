@@ -5,8 +5,6 @@ TRYING TO CONVERT DATA FRAME TEMPERATURES
 
 """
 import csv
-import camera
-import seekcamera_simple_fer
 import seekcamera
 import pandas as pd
 import numpy as np
@@ -16,8 +14,8 @@ def main():
     '''later also insert the possibility of choosing which
     temperature to display from the program (not typing)'''
         
-    #unit_input = int(input("0 = CELSIUS, 1 = FAHRENHEIT, 2 = KELVIN\nWhich unit do you want?\n"))
-    unit_input=int(0)
+    unit_input = int(input("0 = CELSIUS, 1 = FAHRENHEIT, 2 = KELVIN\nWhich unit do you want?\n"))
+    #unit_input=int(0)
     #unit_input=int(1)
     #unit_input=int(2)
 
@@ -25,11 +23,11 @@ def main():
     # and change the format to string to be able to use 
     # and save the output at the "unit_input_name" variable
 
-    unit_input_name=str(camera.SeekCameraTemperatureUnit(unit_input))
+    unit_input_name=str(seekcamera.SeekCameraTemperatureUnit(unit_input))
     print("You chose " + unit_input_name) #to chechk if reading correctly
          
-    csv_file_name = 'Thermography_1.csv'
-    #csv_file_name = "Thermography-DE0D2DEF2508.csv"
+    #csv_file_name = 'Thermography_1.csv'
+    csv_file_name = "Thermography-DE0D2DEF2508.csv"
 
     if unit_input_name == "CELSIUS":
         temperature_unit_wanted = "Temperature (°C)"
