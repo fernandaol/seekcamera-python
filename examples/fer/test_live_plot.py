@@ -21,12 +21,16 @@ def animate(i):
     plt.cla()
     plt.rcParams["figure.autolayout"] = True
 
+    "If want to plot only one of them, comment the other two values"
+
     plt.plot(x, y1, label='Minimum')
     plt.plot(x, y2, label='Mean')
     plt.plot(x, y3, label='Maximum')
 
     plt.legend(loc='upper left')
     plt.tight_layout()
+
+    "How to plot them separately:"
 
     # fig, (ax1, ax2, ax3) = plt.subplots(nrows=3, ncols=1, sharex=True)
     # ax1.plot(x, y1, label='Min')

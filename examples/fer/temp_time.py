@@ -119,9 +119,10 @@ def on_frame(camera, camera_frame, file_name):
 
         # time.sleep(1)
 
-        'Get time stamp to use on axis X instead of the frame number/index'
-        'timestamp_utc_ns only part of the code camera.py that seems to be able to provide ' \
-        'the time, while camera is running.'
+        'Get time stamp to use on axis X instead of the frame number/index (value_x)\
+        timestamp_utc_ns is the only part of the code `camera.py` that seems to be able to provide \
+        the time, while camera is running. However not able to access the values - it is showing `readonly` values\
+        Maybe: need of better understanding of what is the `frame header` and how it works '
 
         # c = SeekCameraFrameHeader()
         # print(c.timestamp_utc_ns)
