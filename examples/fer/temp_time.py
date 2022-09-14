@@ -1,5 +1,4 @@
 from time import sleep
-import time
 
 import numpy as np
 import pandas as pd
@@ -14,7 +13,6 @@ from seekcamera import (
     SeekCameraManagerEvent,
     SeekCameraFrameFormat, SeekCameraFrameHeader, SeekCamera,
 )
-
 values_x = []
 min_temp = []
 max_temp = []
@@ -22,57 +20,10 @@ mean_temp = []
 
 fieldnames = ["x_value", "minimum_value", "maximum_value", "meantemp_value"]
 
-def animation(self):
-
-    x = range(len(min_temp))
-    y1 = min_temp
-    y2 = mean_temp
-    y3 = max_temp
-    plt.style.use('fivethirtyeight')
-
-    fig, axs = plt.subplots(3, sharex=True)
-    axs[0].plot(x, y1, label='Min')
-    axs[0].set_title('MIN Temperature over Time')
-    axs[1].plot(x, y2, 'tab:orange', label='Average')
-    axs[1].set_title('AVERAGE of Temperatures over Time')
-    axs[2].plot(x, y3, 'tab:green', label='Max')
-    axs[2].set_title('MAX Temperature over Time')
-
-    # plt.show()
-
-"""    # format plot min temperature values
-    plt.cla()
-    plt.tight_layout()
-    plt.plot(x, y1)
-    plt.subplot(1, 2, 1)
-    plt.xticks(rotation=45, ha='right')
-    plt.subplots_adjust(bottom=0.30)
-    plt.title('MIN Temperature over Time')
-    plt.xlabel('Frames')
-    plt.ylabel('Temperature')
-
-    # format plot average temp values
-
-    plt.plot(x, y2)
-    plt.subplot(1, 2, 2)
-    plt.xticks(rotation=45, ha='right')
-    plt.subplots_adjust(bottom=0.30)
-    plt.title('AVERAGE of Temperatures over Time')
-    plt.xlabel('Frames')
-    plt.ylabel('Temperature')
-
-    plt.plot(x, y3)
-    plt.subplot(1, 2, 3)
-    plt.xticks(rotation=45, ha='right')
-    plt.subplots_adjust(bottom=0.30)
-    plt.title('MAX Temperature over Time')
-    plt.xlabel('Frames')
-    plt.ylabel('Temperature')
-
-    plt.show()
-    """
-
 def generate_pdf(csv_file_name, pdf_name, temperature_label_display=None):
+
+    "Basically shows the image of the last frame and save it with the desired file name."
+
     reader = csv.reader(open(csv_file_name, "r"), delimiter=" ")
     rows = []
 
@@ -94,7 +45,7 @@ def generate_pdf(csv_file_name, pdf_name, temperature_label_display=None):
     plt.xticks([])
     plt.yticks([])
     plt.savefig(pdf_name)
-    plt.show()
+    #plt.show()
 
 def on_frame(camera, camera_frame, file_name):
     """Async callback fired whenever a new frame is available.
@@ -121,12 +72,12 @@ def on_frame(camera, camera_frame, file_name):
         return
 
     frame = camera_frame.thermography_float
-    print(frame)
+    print("Frame is here: ", frame)
     print("frame available: {cid} (size: {w}x{h})".format(cid=camera.chipid,
                                                           w=frame.width, h=frame.height))
 
     # np.savetxt('Thermography_1.csv', frame.data, fmt="%.1f")
-    # would be better to overwrite file every time here instead of opening and closing it at every iteration
+    # would be better to overwrite file every time here instead of opening and closing it at every iteration - not done yet
     np.savetxt(file, frame.data, fmt="%.1f")
 
     file.close()
@@ -138,56 +89,53 @@ def on_frame(camera, camera_frame, file_name):
     print("\n")
     print("Min:", df.min().min(), "Max:", df.max().max(), "Mean:", np.mean(df))
 
-
-    # with open('data.csv', 'w') as csv_file:
-    #     csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-    #     csv_writer.writeheader()
-
-
     with open('data.csv', 'a') as csv_file:
         csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
 
-
-
+        # Used the length of min_temp to have an index - but it is the same for all of the temperatures, since it is the number of frames
         x_value = len(min_temp)
-        # print(x_value)
-        # values_x.append(x_value+1)
-        # print(values_x)
 
         minimum_value = df.min().min()
         min_temp.append(minimum_value)
         print(minimum_value)
-        # print(len(min_temp))
 
         maximum_value = df.max().max()
-        # max_temp.append(maximum_value)
-        # print(max_temp)
-        # print(len(max_temp))
 
         meantemp_value = np.mean(df)
         # mean_temp.append(meantemp_value)
         # print(np.mean(df))
         # print("Mean:", mean_temp)
 
+        #names of each column on the csv
         info = {
             "x_value": x_value,
             "minimum_value": minimum_value,
             "maximum_value": maximum_value,
             "meantemp_value": meantemp_value
         }
+
         csv_writer.writerow(info)
-        print(x_value, minimum_value, meantemp_value, maximum_value)
+        print(x_value, minimum_value, maximum_value, meantemp_value)
 
         # time.sleep(1)
 
-      #  header_camera = SeekCameraFrameHeader(SeekCamera)
-        #time_stamp = property(SeekCameraFrameHeader.timestamp_utc_ns)
-      # print(SeekCamera.timestamp_utc_ns)
-        #print("Here is the time >>", time_stamp)
+        'Get time stamp to use on axis X instead of the frame number/index'
+        'timestamp_utc_ns only part of the code camera.py that seems to be able to provide ' \
+        'the time, while camera is running.'
+
+        # c = SeekCameraFrameHeader()
+        # print(c.timestamp_utc_ns)
+
+        print("1 - ", property(SeekCameraFrameHeader().timestamp_utc_ns).getter)
+        print("2 - ", repr(SeekCameraFrameHeader))
+        print("3 - ", property(SeekCameraFrameHeader().timestamp_utc_ns))
+        print("4 - Time is here: ", SeekCameraFrameHeader().timestamp_utc_ns)
+        print("5 - CHIP ID is here: ", SeekCameraFrameHeader().chipid)
+        print("6 - Serial Number is here: ", SeekCameraFrameHeader().serial_number)
 
 
 # In Python, a callback is simply a function or a method passed to LocalSolver.
-#  A callback takes two parameters: the LocalSolver object that triggers the event and
+# A callback takes two parameters: the LocalSolver object that triggers the event and
 #  the type of the callback. It is possible to use the same callback method or object
 #  for multiple events or multiple LocalSolver instances. The method can be a static
 # function or a method on a class.
@@ -217,6 +165,8 @@ def on_event(camera, event_type, event_status, temperature_wanted):
         # file_name = "Thermography-" + camera.chipid + ".csv"
         file_name = "Thermography.csv"
 
+    #Creates file data.csv and append the values for the temperatures at each new frame
+
         with open('data.csv', 'w') as csv_file:
             csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
             csv_writer.writeheader()
@@ -241,9 +191,7 @@ def main():
     # Create a context structure responsible for managing all connected USB cameras.
     # Cameras with other IO types can be managed by using a bitwise or of the
     # SeekCameraIOType enum cases.
-    # anim = FuncAnimation(plt.gcf(), animation, interval=1000)
-    # plt.tight_layout()
-    # plt.show()
+
     with SeekCameraManager(SeekCameraIOType.USB) as manager:
         #temperature_wanted = int(input("0 = CELSIUS, 1 = FAHRENHEIT, 2 = KELVIN\nWhich unit do you want?\n"))
         temperature_wanted = int(0)
@@ -256,11 +204,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-#anim = FuncAnimation(plt.gcf(), animation)
-#plt.tight_layout()
-#plt.show()
-#
 
 
 
