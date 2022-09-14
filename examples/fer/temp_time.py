@@ -195,7 +195,7 @@ def main():
 
     with SeekCameraManager(SeekCameraIOType.USB) as manager:
         #temperature_wanted = int(input("0 = CELSIUS, 1 = FAHRENHEIT, 2 = KELVIN\nWhich unit do you want?\n"))
-        temperature_wanted = int(0)
+        temperature_wanted = int(2)
 
         # Start listening for events.
         manager.register_event_callback(on_event, temperature_wanted)

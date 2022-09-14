@@ -32,7 +32,7 @@ def animate(i):
     plt.legend(loc='upper left')
     plt.tight_layout()
 
-    "Initial idea on how to plot them separately:"
+    "Initial idea on how to plot them separately, but not sure if works yet:"
 
     # fig, (ax1, ax2, ax3) = plt.subplots(nrows=3, ncols=1, sharex=True)
     # ax1.plot(x, y1, label='Min')
