@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 import time
 
+# PLOTTING TEMPERATURE MAX, MIN AND MEAN FOR EACH FRAME
+
 plt.style.use('fivethirtyeight')
 
 x_vals = []
@@ -30,7 +32,7 @@ def animate(i):
     plt.legend(loc='upper left')
     plt.tight_layout()
 
-    "How to plot them separately:"
+    "Initial idea on how to plot them separately:"
 
     # fig, (ax1, ax2, ax3) = plt.subplots(nrows=3, ncols=1, sharex=True)
     # ax1.plot(x, y1, label='Min')
